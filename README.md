@@ -28,6 +28,7 @@ Data Dragon (estático)  →  priors   →  BuildNet (GRU)          ├→  Fast
 | **API** | FastAPI con endpoints de draft, build, análisis en vivo, meta, dataset y modelo. |
 | **Interfaz** | SPA HTML/CSS/JS sin frameworks, tema hextech, responsive, accesible y con gráficos SVG propios. |
 | **Cliente local (LCU)** | Lee champ select y partida en curso desde League of Legends. Busca la instalación en todos los discos y sincroniza Draft/En vivo; solo lectura. |
+| **Escritorio** | `RiftSense.exe` con Chromium embebido (Electron): arranca el backend, abre la UI y lo detiene al cerrar. |
 
 ---
 
@@ -61,6 +62,9 @@ Abre **http://127.0.0.1:8000**.
 
 Si League of Legends está abierto en este PC, la pestaña **Cliente** lo detecta
 y puedes sincronizar champ select y partida sin clave adicional.
+
+También puedes abrir la aplicación en una ventana de escritorio con Chromium
+embebido (requiere compilar el lanzador una vez, ver sección 13).
 
 También puedes ejecutar todo de una vez:
 
@@ -371,6 +375,11 @@ Riot con fallback a iniciales si no hay red.
 │       ├── locator.py            búsqueda en discos + lockfile
 │       └── mapper.py             champ select y partida -> esquema RiftSense
 ├── web/                          SPA (HTML/CSS/JS, sin build)
+├── desktop/                      lanzador Electron (Chromium embebido)
+│   ├── main.js                   arranque del servidor + ventana
+│   ├── splash.html               pantalla de carga
+│   ├── package.json
+│   └── scripts/                  icono y raíz del proyecto
 ├── data/raw, data/processed      datos (no versionados)
 ├── artifacts/                    meta.json, modelos y reportes
 ├── scripts/build_all.py          pipeline completo
@@ -425,3 +434,57 @@ Con el servidor en marcha, `POST /api/reload` recarga los checkpoints.
 | `torch` no instala | Usa Python 3.11-3.14 y `pip install torch` desde PyPI. |
 | Puerto ocupado | `python -m lolanalyzer.api.server --port 8010`. |
 | Iconos no cargan | Sin internet el CDN falla; la UI muestra iniciales. |
+
+---
+
+## 13. Aplicación de escritorio (.exe)
+
+`RiftSense.exe` es un lanzador con **Chromium embebido (Electron)**. Arranca el
+servidor Python si hace falta, muestra una pantalla de carga y abre la interfaz
+en una ventana nativa.
+
+### Uso
+
+1. Deja `RiftSense.exe` en la raíz del proyecto, junto a `.venv`, `lolanalyzer`
+   y `web`.
+2. Doble clic. Si el servidor ya está corriendo lo reutiliza; si no, lo arranca
+   en `127.0.0.1:8000` (o en 8765+ si el puerto está ocupado).
+3. Al cerrar la ventana, si el lanzador arrancó el servidor, lo apaga.
+
+No es un ejecutable autónomo: necesita el proyecto y `.venv`. Para distribuirlo
+a otros PC habría que empaquetar Python, PyTorch y los artefactos.
+
+### Compilar
+
+```powershell
+cd desktop
+npm install
+npm run dist
+Copy-Item .\dist\RiftSense.exe ..\RiftSense.exe
+```
+
+- Requiere Node 20+ y conexión para descargar Electron (una vez).
+- El `.exe` pesa ~106 MB.
+- No está firmado: Windows SmartScreen puede pedir confirmación.
+- El icono se genera desde `web/assets/favicon.svg`.
+- `root.json` se genera con la ruta del proyecto y se incrusta en el `.exe`.
+
+Si mueves el proyecto, vuelve a compilar o crea `rift-sense.config.json` junto
+al `.exe`:
+
+```json
+{ "root": "C:\\ruta\\al\\proyecto" }
+```
+
+### Logs
+
+- `%APPDATA%\riftsense-desktop\server.log`
+- `%APPDATA%\riftsense-desktop\launcher.log`
+- `%TEMP%\riftsense-boot.log`
+
+### Nota sobre CEF
+
+Se usa Electron, que embebe Chromium. No es el proyecto CEF/CefSharp; si
+necesitas una integración CEF nativa, el mismo flujo se puede portar a
+CefSharp/.NET.
+

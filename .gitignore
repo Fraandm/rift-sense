@@ -19,3 +19,11 @@ artifacts/*.json
 Thumbs.db
 
 data/client_location.json
+
+# Escritorio (Electron)
+desktop/node_modules/
+desktop/dist/
+desktop/build/
+RiftSense.exe
+
+desktop/root.json

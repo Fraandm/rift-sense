@@ -1,0 +1,55 @@
+{
+  "name": "riftsense-desktop",
+  "version": "1.0.0",
+  "description": "Lanzador de escritorio de RiftSense con Chromium embebido",
+  "author": "Franco",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "start": "node scripts/make-root.js && electron .",
+    "icon": "node scripts/make-icon.js",
+    "root": "node scripts/make-root.js",
+    "dist": "node scripts/make-root.js && npm run icon && electron-builder --win portable",
+    "dir": "node scripts/make-root.js && npm run icon && electron-builder --win dir"
+  },
+  "devDependencies": {
+    "electron": "^45.3.3",
+    "electron-builder": "^26.18.0",
+    "png-to-ico": "^3.0.2",
+    "sharp": "^0.35.5"
+  },
+  "build": {
+    "appId": "com.fraandm.riftsense",
+    "productName": "RiftSense",
+    "asar": true,
+    "compression": "normal",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "splash.html",
+      "build/icon.png",
+      "root.json",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "RiftSense.exe"
+    },
+    "portable": {
+      "artifactName": "RiftSense.exe",
+      "requestExecutionLevel": "user"
+    }
+  }
+}

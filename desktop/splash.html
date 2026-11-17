@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RiftSense</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(700px 420px at 20% 0%, rgba(200, 170, 110, 0.13), transparent 65%),
+        radial-gradient(700px 500px at 100% 20%, rgba(10, 200, 185, 0.1), transparent 60%),
+        #060a12;
+      color: #e8edf7;
+      font-family: "Segoe UI", system-ui, sans-serif;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 40px 48px;
+      border: 1px solid rgba(200, 170, 110, 0.22);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(18, 30, 50, 0.92), rgba(9, 16, 29, 0.94));
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+      min-width: 420px;
+    }
+    .mark {
+      width: 82px;
+      height: 82px;
+      filter: drop-shadow(0 0 22px rgba(200, 170, 110, 0.28));
+    }
+    h1 {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f0d9a5;
+    }
+    .sub {
+      margin: -10px 0 0;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #6b7a94;
+    }
+    .bar {
+      width: 260px;
+      height: 3px;
+      border-radius: 2px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.07);
+    }
+    .bar::after {
+      content: "";
+      display: block;
+      width: 38%;
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, rgba(200, 170, 110, 0.35), #e7cf9b);
+      animation: slide 1.4s ease-in-out infinite;
+    }
+    #status {
+      font-size: 12px;
+      color: #94a2ba;
+      min-height: 18px;
+      text-align: center;
+    }
+    .foot {
+      font-size: 9.5px;
+      color: #4f5d75;
+      letter-spacing: 0.06em;
+    }
+    @keyframes slide {
+      0% { transform: translateX(-110%); }
+      100% { transform: translateX(360%); }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#f0d9a5"/>
+          <stop offset="1" stop-color="#8f713a"/>
+        </linearGradient>
+      </defs>
+      <path d="M32 6 55 19v26L32 58 9 45V19L32 6Z" fill="none" stroke="url(#g)" stroke-width="2"/>
+      <path d="M32 16 46 24v16L32 48 18 40V24L32 16Z" fill="url(#g)" opacity=".92"/>
+      <path d="M32 24 39 28v8l-7 4-7-4v-8l7-4Z" fill="#060a12"/>
+    </svg>
+    <h1>RiftSense</h1>
+    <p class="sub">Draft · Build · Live</p>
+    <div class="bar" aria-hidden="true"></div>
+    <div id="status">Iniciando servidor local…</div>
+    <span class="foot">Chromium embebido · solo lectura del cliente de LoL</span>
+  </main>
+</body>
+</html>
