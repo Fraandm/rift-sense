@@ -27,3 +27,6 @@ desktop/build/
 RiftSense.exe
 
 desktop/root.json
+
+release/
+RiftSense.exe.bak

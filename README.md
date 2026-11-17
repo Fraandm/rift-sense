@@ -454,6 +454,36 @@ en una ventana nativa.
 No es un ejecutable autónomo: necesita el proyecto y `.venv`. Para distribuirlo
 a otros PC habría que empaquetar Python, PyTorch y los artefactos.
 
+### Actualizaciones automáticas
+
+Al arrancar, el lanzador consulta la última release de `Fraandm/rift-sense` en
+GitHub y compara la versión. Si hay una más nueva, muestra las notas y permite
+actualizar desde el propio lanzador.
+
+Requisitos:
+
+- **GitHub CLI** (`gh`) instalado y autenticado con acceso al repositorio:
+  `gh auth login`.
+- Usar el `RiftSense.exe` portable normal (no `npm start`). En desarrollo la
+  comprobación se omite.
+
+Flujo:
+
+1. Descarga `latest.json`, el nuevo `RiftSense.exe` y el ZIP del proyecto.
+2. Verifica el **SHA-256** de cada archivo contra el manifiesto.
+3. Un script de PowerShell espera a que el lanzador se cierre, reemplaza el
+   `.exe` (guardando `RiftSense.exe.bak`), copia el código y actualiza las
+   dependencias con `pip`.
+4. Conserva `data/` (incluido `data/client_location.json`), `.venv`, `.env` y
+   la configuración local. Los modelos y metadatos de `artifacts/` y
+   `data/processed/` se actualizan con la release.
+5. Reinicia la aplicación con la nueva versión.
+
+El progreso se registra en `%TEMP%\RiftSense-update.log`. Si algo falla, se
+restaura el ejecutable anterior y se vuelve a abrir la versión actual.
+
+Para desactivar la comprobación: `RIFTSENSE_DISABLE_UPDATES=1`.
+
 ### Compilar
 
 ```powershell
@@ -476,11 +506,38 @@ al `.exe`:
 { "root": "C:\\ruta\\al\\proyecto" }
 ```
 
+### Publicar una nueva versión
+
+1. Cambia `version` en `desktop/package.json` (por ejemplo `1.0.1`).
+2. Desde la raíz, ejecuta:
+
+   ```powershell
+   .\scripts\build_release.ps1
+   ```
+
+   Compila el `.exe`, genera `RiftSense-project.zip` y `latest.json`, y crea o
+   actualiza la release `vX.Y.Z` en GitHub.
+3. Haz commit y push de los cambios.
+
+Requiere `gh auth login` con permiso `repo`. Los assets publicados son
+`RiftSense.exe`, `RiftSense-project.zip` y `latest.json`; el manifiesto incluye
+la versión, las notas y los SHA-256. Los usuarios verán el aviso en el
+siguiente arranque.
+
+Prueba local del flujo simulando una versión anterior:
+
+```powershell
+$env:RIFTSENSE_CURRENT_VERSION = "0.9.0"
+$env:RIFTSENSE_UPDATE_YES = "1"
+Start-Process .\RiftSense.exe
+```
+
 ### Logs
 
 - `%APPDATA%\riftsense-desktop\server.log`
 - `%APPDATA%\riftsense-desktop\launcher.log`
 - `%TEMP%\riftsense-boot.log`
+- `%TEMP%\RiftSense-update.log`
 
 ### Nota sobre CEF
 
