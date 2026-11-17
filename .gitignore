@@ -1,0 +1,21 @@
+# Entorno
+.venv/
+__pycache__/
+*.pyc
+.env
+
+# Datos y artefactos (reproducibles con el pipeline)
+data/raw/
+data/processed/
+data/static/
+data/cache/
+artifacts/*.pt
+artifacts/meta.json
+artifacts/*.json
+!artifacts/.gitkeep
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+data/client_location.json

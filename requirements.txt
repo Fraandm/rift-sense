@@ -1,0 +1,7 @@
+# RiftSense - Analizador de League of Legends
+# Python 3.11+ (probado en 3.14)
+torch>=2.9
+numpy>=2.1
+fastapi>=0.115
+uvicorn[standard]>=0.30
+requests>=2.31
