@@ -93,7 +93,7 @@ $manifestPath = Join-Path $release "latest.json"
 $manifestJson = $manifest | ConvertTo-Json -Depth 6
 [System.IO.File]::WriteAllText($manifestPath, $manifestJson, (New-Object System.Text.UTF8Encoding($false)))
 $notesPath = Join-Path $release "notes.md"
-Set-Content $notesPath $notes -Encoding UTF8
+[System.IO.File]::WriteAllText($notesPath, $notes, (New-Object System.Text.UTF8Encoding($false)))
 
 $existing = $null
 try {
